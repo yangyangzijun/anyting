@@ -31,7 +31,7 @@ void BubblSort_1(vector<int> &list)//起泡排序的改进
         }
     }
 }
-  '''
+'''
 void InsertSort(vector<int> &list)//插入排序 O(n^2)
 {
     int l_len=list.size();

@@ -1,5 +1,7 @@
-起泡排序
-'''
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using  namespace std;
 void BubblSort(vector<int> &list)//起泡排序 每一趟排序使的前面的排序列+1
 {
     int l_len=list.size();
@@ -31,7 +33,6 @@ void BubblSort_1(vector<int> &list)//起泡排序的改进
         }
     }
 }
-'''
 void InsertSort(vector<int> &list)//插入排序 O(n^2)
 {
     int l_len=list.size();

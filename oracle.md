@@ -76,6 +76,7 @@ create tablespace ts_test datafile 'D:\piccoa_1.dbf' size 200m;--创建表空间
 create user user_test identified by 123456 default tablespace ts_test temporary tablespace temp profile default;--新建用户 使其默认表空间为ts_test
 grant dba,connect,resource,imp_full_database,exp_full_database to system;授予权限
  grant create session to user_test;
+ rant dba,connect,resource,imp_full_database,exp_full_database to user_test;
 
 conn user_test/123456
 

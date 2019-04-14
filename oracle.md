@@ -24,20 +24,20 @@ Data Pump Export（以下简称为Export）是一个实用程序，用于将数�
 ## 导入导出表
 ```
 sqlplus system/123456 
-create or replace directory dump_dir as 'D:\app';--创建directory 对象目录
- grant imp_full_database,exp_full_database to scott;--授予scott用户权限
-create table LSH--创建新的表
+create or replace directory dump_dir as 'D:\app';--创建directory 对象目录 转储文件只能存放在directory 对象目录下
+ 
+create table LSH
 (DEPTNO number(4) primary key,
 DNAME varchar2(14),
 LOC varchar2(13)
 );
-insert all  --在新表中插入数据
+insert all  
      into LSH values(10,'ACCOUNTING','LONDON')
      into LSH values (20,'RESEARCH','PERSTON')
      into LSH values (30,'SALES','LIVERPOOL')
      SELECT 1 FROM DUAL;
 
-expdp scott/h... DIRECTORY=dump_dir dumpfile=tab.dmp tables=scott.LSH--将新建的表导出
+expdp system/123456 DIRECTORY=dump_dir dumpfile=tab.dmp tables=scott.LSH--将新建的表导出
 drop table scott.LSh;--删除新建的表
 impdp system/123456 DIRECTORY=dump_dir dumpfile=tab.dmp tables=LSH --将导出的表导入
 select * from lsh;       --查看导入的表是否导入

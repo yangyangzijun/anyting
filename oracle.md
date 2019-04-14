@@ -78,7 +78,7 @@ grant dba,connect,resource,imp_full_database,exp_full_database to user_test;授�
 
 conn user_test/123456
 
-create table LSH_1--创建新的表1
+create table LSH_1
 (DEPTNO number(4) primary key,
 DNAME varchar2(14),
 LOC varchar2(13)

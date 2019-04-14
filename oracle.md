@@ -64,9 +64,9 @@ insert all
 grant read,write on directory dump_dir to system;
 grant exp_full_database to system;
 grant imp_full_database to system;
-expdp system/123456 DIRECTORY=dump_dir dumpfile=schema.dmp schemas=scott--将scott用户的模式导出
+expdp system/123456 DIRECTORY=dump_dir dumpfile=schema_1.dmp schemas=scott--将scott用户的模式导出
  drop user scott cascade;                       --级联删除scott用户
-impdp system/123456 DIRECTORY=dump_dir dumpfile=schema.dmp schemas=scott--将scott用户的模式导入
+impdp system/123456 DIRECTORY=dump_dir dumpfile=schema_1.dmp schemas=scott--将scott用户的模式导入
 select * from scott.lsh;        --查看是否导入成功
  ```
 

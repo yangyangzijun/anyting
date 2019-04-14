@@ -1,4 +1,4 @@
-#     Oracle Data Pump
+#                   Oracle Data Pump
 ##     Oracle Data Pump概述
 
           Oracle Data Pump技术可以将数据和元数据从一个数据库高速移动到另一个数据库。
@@ -27,6 +27,7 @@ Data Pump Export（以下简称为Export）是一个实用程序，用于将数�
 集中的每个数据库对象。
 ## 导入导出表
 ```
+sqlplus system/123456 
 create or replace directory dump_dir as 'D:\app\Administrator\oradata\';--创建directory 对象目录
  grant imp_full_database,exp_full_database to scott;--授予scott用户权限
 create table LSH--创建新的表
@@ -48,18 +49,44 @@ select * from lsh;       --查看导入的表是否导入
 
 ## 导入导出模式
 ```
-expdp system/200618 DIRECTORY=dump_dir dumpfile=schema.dmp schemas=scott--将scott用户的模式导出
+expdp system/123456 DIRECTORY=dump_dir dumpfile=schema.dmp schemas=scott--将scott用户的模式导出
  drop user scott cascade;                       --级联删除scott用户
-impdp system/200618 DIRECTORY=dump_dir dumpfile=schema.dmp schemas=scott--将scott用户的模式导入
-conn scott/200618         --查看是否导入成功
+impdp system/123456 DIRECTORY=dump_dir dumpfile=schema.dmp schemas=scott--将scott用户的模式导入
+conn scott/123456         --查看是否导入成功
+ ```
+
+## 导入导出表空间
+```
+create tablespace ts_test datafile 'D:\piccoa.dbf' size 200m;--创建表空间
+create user user_test identified by 123456 default tablespace ts_test temporary tablespace temp profile default;--新建用户 使其默认表空间为ts_test
+grant dba,connect,resource,imp_full_database,exp_full_database to uset_test;授予权限
+alter user user_test  unlimited on ts_test;--新建的用户对表空间可以任意操作
+conn user_test/123456
+
+create table LSH_1--创建新的表1
+(DEPTNO number(4) primary key,
+DNAME varchar2(14),
+LOC varchar2(13)
+);
+create table LSH_2--创建新的表2
+(DEPTNO number(4) primary key,
+DNAME varchar2(14),
+LOC varchar2(13)
+);
+insert all  --在新表中插入数据
+     into LSH_1 values(10,'ACCOUNTING','LONDON')
+     into LSH_1 values (20,'RESEARCH','PERSTON')
+     into LSH_1 values (30,'SALES','LIVERPOOL')
+     SELECT 1 FROM DUAL;
 
 
-## 
+expdp system/200618 DIRECTORY=dump_dir dumpfile=tablespace_ts_test.dmp tablespaces=ts_test--导出表空间
+ drop table LSh_1;//删除表空间中的表
+ drop table Lsh_2;
+impdp system/200618 DIRECTORY=dump_dir dumpfile=tablespace_ts_test.dmp tablespaces=ts_test--导入表空间
+select * from ts_test.lsh_1;--查看是否导入成功
+```
 
-expdp system/200618 DIRECTORY=dump_dir dumpfile=tablespace.dmp tablespaces=example
- 
-impdp system/200618 DIRECTORY=dump_dir dumpfile=tablespace.dmp tablespaces=example
-*****************
 
 expdp system/200618 DIRECTORY=dump_dir dumpfile=full.dmp full=y
 
@@ -70,3 +97,4 @@ expdp system/200618 DIRECTORY=dump_dir dumpfile=full.dmp full=y
 
 
 
+-

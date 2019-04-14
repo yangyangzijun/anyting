@@ -38,9 +38,9 @@ insert all
      SELECT 1 FROM DUAL;
 
 expdp system/123456 DIRECTORY=dump_dir dumpfile=tab.dmp tables=scott.LSH--将新建的表导出
-drop table scott.LSh;--删除新建的表
+drop table LSh;--删除新建的表
 impdp system/123456 DIRECTORY=dump_dir dumpfile=tab.dmp tables=LSH --将导出的表导入
-select * from lsh;       --查看导入的表是否导入
+drop table lsh;       --查看导入的表是否导入
 ```
 
 ## 导入导出模式

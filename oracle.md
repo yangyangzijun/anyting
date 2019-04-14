@@ -87,15 +87,16 @@ impdp system/200618 DIRECTORY=dump_dir dumpfile=tablespace_ts_test.dmp tablespac
 select * from ts_test.lsh_1;--查看是否导入成功
 ```
 ## 导入导出数据库
+(以一个表查看数据库是否导入成功)
 
 ```
-select * from lsh_1;
+select * from lsh_1;--查看表是否存在
 
-expdp system/123456@orcl DIRECTORY=dump_dir dumpfile=full_orcl.dmp full=y
-drop table lsh_1;
+expdp system/123456@orcl DIRECTORY=dump_dir dumpfile=full_orcl.dmp full=y--导出数据库
+drop table lsh_1;--删除数据库中的表lsh_1;
 select * from lsh_1;
-impdp system/123456@orcl DIRECTORY=dump_dir dumpfile=full_orcl.dmp full=y
-select * from lsh_1;
+impdp system/123456@orcl DIRECTORY=dump_dir dumpfile=full_orcl.dmp full=y--导入数据库
+select * from lsh_1;查看数据是否导入成功
 
 
 

@@ -120,7 +120,7 @@ select * from lsh;
 expdp system/123456@orcl DIRECTORY=dump_dir dumpfile=full_orcl.dmp full=y--导出数据库
 
 impdp system/123456@test DIRECTORY=dump_dir dumpfile=full_orcl.dmp full=y--导入数据库
-splplus system/123456@test
+sqlplus system/123456@test
 select * from lsh;查看数据是否导入成功
 
 

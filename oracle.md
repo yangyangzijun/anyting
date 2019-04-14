@@ -102,13 +102,26 @@ select * from lsh_1;--查看是否导入成功
 (以一个表查看数据库是否导入成功)
 
 ```
-select * from lsh_1;--查看表是否存在
+splplus system/123456@orcl
+create table LSH
+(DEPTNO number(4) primary key,
+DNAME varchar2(14),
+LOC varchar2(13)
+);
+insert all  
+     into LSH values(10,'ACCOUNTING','LONDON')
+     into LSH values (20,'RESEARCH','PERSTON')
+     into LSH values (30,'SALES','LIVERPOOL')
+     SELECT 1 FROM DUAL;
+select * from lsh;--查看表是否存在
+splplus system/123456@test
+select * from lsh;
 
 expdp system/123456@orcl DIRECTORY=dump_dir dumpfile=full_orcl.dmp full=y--导出数据库
-drop table lsh_1;--删除数据库中的表lsh_1;
-select * from lsh_1;
-impdp system/123456@orcl DIRECTORY=dump_dir dumpfile=full_orcl.dmp full=y--导入数据库
-select * from lsh_1;查看数据是否导入成功
+
+impdp system/123456@test DIRECTORY=dump_dir dumpfile=full_orcl.dmp full=y--导入数据库
+splplus system/123456@test
+select * from lsh;查看数据是否导入成功
 
 
 

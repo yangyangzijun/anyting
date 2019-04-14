@@ -12,11 +12,7 @@
 
 许多数据泵导出和导入操作要求用户具有DATAPUMP_EXP_FULL_DATABASE角色和/或DATAPUMP_IMP_FULL_DATABASE角色。运行作为数据库创建一部分的标准脚本时，将自动为Oracle数据库定义这些角色。（请注意，虽然这些角色的名称包含单词FULL，但实际上所有导出和导入模式都需要这些角色，而不仅仅是完整模式。）
 
-这个DATAPUMP_EXP_FULL_DATABASE角色仅影响导出。这个DATAPUMP_IMP_FULL_DATABASE角色影响使用Import SQLFILE参数的导入操作和操作。这些角色允许用户执行导出和导入以执行以下操作：
-* 在其架构范围之外执行操作
-* 监视由其他用户启动的作业
-* 导出无特权用户无法引用的对象（如表空间定义）和导入对象（如目录定义）
-Data Pump执行的所有需要​​这些角色的安全检查也授予对SYS架构的访问权限。
+这个DATAPUMP_EXP_FULL_DATABASE角色仅影响导出。这个DATAPUMP_IMP_FULL_DATABASE角色影响使用Import SQLFILE参数的导入操作和操作。
 
 
 ## 数据泵导出

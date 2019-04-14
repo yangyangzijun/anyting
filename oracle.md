@@ -28,7 +28,7 @@ Data Pump Export（以下简称为Export）是一个实用程序，用于将数�
 ## 导入导出表
 ```
 sqlplus system/123456 
-create or replace directory dump_dir as 'D:\app\Administrator\oradata\';--创建directory 对象目录
+create or replace directory dump_dir as 'D:\app';--创建directory 对象目录
  grant imp_full_database,exp_full_database to scott;--授予scott用户权限
 create table LSH--创建新的表
 (DEPTNO number(4) primary key,
@@ -41,9 +41,9 @@ insert all  --在新表中插入数据
      into LSH values (30,'SALES','LIVERPOOL')
      SELECT 1 FROM DUAL;
 
-expdp scott/hangls... DIRECTORY=dump_dir dumpfile=tab.dmp tables=scott.LSH--将新建的表导出
+expdp scott/h... DIRECTORY=dump_dir dumpfile=tab.dmp tables=scott.LSH--将新建的表导出
 drop table scott.LSh;--删除新建的表
-impdp scott/200618 DIRECTORY=dump_dir dumpfile=tab.dmp tables=LSH --将导出的表导入
+impdp system/123456 DIRECTORY=dump_dir dumpfile=tab.dmp tables=LSH --将导出的表导入
 select * from lsh;       --查看导入的表是否导入
 ```
 
@@ -59,8 +59,8 @@ conn scott/123456         --查看是否导入成功
 ```
 create tablespace ts_test datafile 'D:\piccoa.dbf' size 200m;--创建表空间
 create user user_test identified by 123456 default tablespace ts_test temporary tablespace temp profile default;--新建用户 使其默认表空间为ts_test
-grant dba,connect,resource,imp_full_database,exp_full_database to uset_test;授予权限
-alter user user_test  unlimited on ts_test;--新建的用户对表空间可以任意操作
+grant dba,connect,resource,imp_full_database,exp_full_database to user_test;授予权限
+
 conn user_test/123456
 
 create table LSH_1--创建新的表1
@@ -68,22 +68,22 @@ create table LSH_1--创建新的表1
 DNAME varchar2(14),
 LOC varchar2(13)
 );
-create table LSH_2--创建新的表2
+create table LSH_2
 (DEPTNO number(4) primary key,
 DNAME varchar2(14),
 LOC varchar2(13)
 );
-insert all  --在新表中插入数据
+insert all  
      into LSH_1 values(10,'ACCOUNTING','LONDON')
      into LSH_1 values (20,'RESEARCH','PERSTON')
      into LSH_1 values (30,'SALES','LIVERPOOL')
      SELECT 1 FROM DUAL;
 
 
-expdp system/200618 DIRECTORY=dump_dir dumpfile=tablespace_ts_test.dmp tablespaces=ts_test--导出表空间
+expdp system/123456 DIRECTORY=dump_dir dumpfile=tablespace_ts_test.dmp tablespaces=ts_test
  drop table LSh_1;//删除表空间中的表
  drop table Lsh_2;
-impdp system/200618 DIRECTORY=dump_dir dumpfile=tablespace_ts_test.dmp tablespaces=ts_test--导入表空间
+impdp system/123456 DIRECTORY=dump_dir dumpfile=tablespace_ts_test.dmp tablespaces=ts_test--导入表空间
 select * from ts_test.lsh_1;--查看是否导入成功
 ```
 ## 导入导出数据库

@@ -50,10 +50,24 @@ select * from  lsh;       --查看导入的表是否导入
 
 ## 导入导出模式
 ```
+ sqlplus scott/123456 
+create table LSH
+(DEPTNO number(4) primary key,
+DNAME varchar2(14),
+LOC varchar2(13)
+);
+insert all  
+     into LSH values(10,'ACCOUNTING','LONDON')
+     into LSH values (20,'RESEARCH','PERSTON')
+     into LSH values (30,'SALES','LIVERPOOL')
+     SELECT 1 FROM DUAL;
+grant read,write on directory dump_dir to system;
+grant exp_full_database to system;
+grant imp_full_database to system;
 expdp system/123456 DIRECTORY=dump_dir dumpfile=schema.dmp schemas=scott--将scott用户的模式导出
  drop user scott cascade;                       --级联删除scott用户
 impdp system/123456 DIRECTORY=dump_dir dumpfile=schema.dmp schemas=scott--将scott用户的模式导入
-conn scott/123456         --查看是否导入成功
+select * from scott.lsh;        --查看是否导入成功
  ```
 
 ## 导入导出表空间

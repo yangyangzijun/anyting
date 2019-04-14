@@ -86,9 +86,16 @@ expdp system/200618 DIRECTORY=dump_dir dumpfile=tablespace_ts_test.dmp tablespac
 impdp system/200618 DIRECTORY=dump_dir dumpfile=tablespace_ts_test.dmp tablespaces=ts_test--导入表空间
 select * from ts_test.lsh_1;--查看是否导入成功
 ```
+## 导入导出数据库
 
+```
+select * from lsh_1;
 
-expdp system/200618 DIRECTORY=dump_dir dumpfile=full.dmp full=y
+expdp system/123456@orcl DIRECTORY=dump_dir dumpfile=full_orcl.dmp full=y
+drop table lsh_1;
+select * from lsh_1;
+impdp system/123456@orcl DIRECTORY=dump_dir dumpfile=full_orcl.dmp full=y
+select * from lsh_1;
 
 
 

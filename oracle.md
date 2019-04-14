@@ -42,9 +42,9 @@ grant read,write on directory dump_dir to scott;
 grant exp_full_database to scott;
 grant imp_full_database to scott;
 
-expdp scott/123456 DIRECTORY=dump_dir dumpfile=tab.dmp tables=scott.LSH--将新建的表导出
+expdp scott/123456 DIRECTORY=dump_dir dumpfile=tab.dmp tables=system.LSH--将新建的表导出
 drop table LSh;--删除新建的表
-impdp scott/123456 DIRECTORY=dump_dir dumpfile=tab.dmp tables=LSH --将导出的表导入
+impdp scott/123456 DIRECTORY=dump_dir dumpfile=tab.dmp tables=system.LSH --将导出的表导入
 select * from  lsh;       --查看导入的表是否导入
 ```
 

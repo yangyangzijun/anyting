@@ -74,7 +74,7 @@ select * from scott.lsh;        --查看是否导入成功
 ```
 create tablespace ts_test datafile 'D:\piccoa.dbf' size 200m;--创建表空间
 create user user_test identified by 123456 default tablespace ts_test temporary tablespace temp profile default;--新建用户 使其默认表空间为ts_test
-grant dba,connect,resource,imp_full_database,exp_full_database to user_test;授予权限
+grant dba,connect,resource,imp_full_database,exp_full_database to system;授予权限
 
 conn user_test/123456
 
@@ -83,23 +83,18 @@ create table LSH_1
 DNAME varchar2(14),
 LOC varchar2(13)
 );
-create table LSH_2
-(DEPTNO number(4) primary key,
-DNAME varchar2(14),
-LOC varchar2(13)
-);
+
 insert all  
      into LSH_1 values(10,'ACCOUNTING','LONDON')
      into LSH_1 values (20,'RESEARCH','PERSTON')
      into LSH_1 values (30,'SALES','LIVERPOOL')
      SELECT 1 FROM DUAL;
-
-
+     
 expdp system/123456 DIRECTORY=dump_dir dumpfile=tablespace_ts_test.dmp tablespaces=ts_test
  drop table LSh_1;//删除表空间中的表
- drop table Lsh_2;
+ 
 impdp system/123456 DIRECTORY=dump_dir dumpfile=tablespace_ts_test.dmp tablespaces=ts_test--导入表空间
-select * from ts_test.lsh_1;--查看是否导入成功
+select * from lsh_1;--查看是否导入成功
 ```
 ## 导入导出数据库
 (以一个表查看数据库是否导入成功)

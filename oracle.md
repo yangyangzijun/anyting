@@ -37,7 +37,7 @@ insert all
      into LSH values (30,'SALES','LIVERPOOL')
      SELECT 1 FROM DUAL;
   
-grant connect,resource,create database,table  to scott;
+
 grant read,write on directory dump_dir to scott;
 grant exp_full_database to scott;
 grant imp_full_database to scott;

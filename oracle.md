@@ -36,11 +36,16 @@ insert all
      into LSH values (20,'RESEARCH','PERSTON')
      into LSH values (30,'SALES','LIVERPOOL')
      SELECT 1 FROM DUAL;
+     grant imp_full ;
+     grant connect,resource,create database,table  to scott;
+grant read,write on directory dump_dir to scott;
+grant exp_full_database to scott;
+grant imp_full_database to scott;
 
-expdp system/123456 DIRECTORY=dump_dir dumpfile=tab.dmp tables=scott.LSH--将新建的表导出
+expdp scott/123456 DIRECTORY=dump_dir dumpfile=tab.dmp tables=scott.LSH--将新建的表导出
 drop table LSh;--删除新建的表
-impdp system/123456 DIRECTORY=dump_dir dumpfile=tab.dmp tables=LSH --将导出的表导入
-drop table lsh;       --查看导入的表是否导入
+impdp scott/123456 DIRECTORY=dump_dir dumpfile=tab.dmp tables=LSH --将导出的表导入
+select * from  lsh;       --查看导入的表是否导入
 ```
 
 ## 导入导出模式

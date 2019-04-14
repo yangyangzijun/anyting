@@ -31,6 +31,11 @@ create table LSH
 DNAME varchar2(14),
 LOC varchar2(13)
 );
+insert all  
+     into LSH values(10,'ACCOUNTING','LONDON')
+     into LSH values (20,'RESEARCH','PERSTON')
+     into LSH values (30,'SALES','LIVERPOOL')
+     SELECT 1 FROM DUAL;
 
 expdp system/123456 DIRECTORY=dump_dir dumpfile=tab.dmp tables=scott.LSH--将新建的表导出
 drop table LSh;--删除新建的表

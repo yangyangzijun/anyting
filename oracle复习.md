@@ -117,3 +117,12 @@ Through V$INSTANCE ACTIVE_STATUS to see if the current database is in quiesce st
 
 * alter system resume;//数据库从挂起状态恢复。
 **select database_state  from V$INSTANCE; **
+
+## 第六章（用户权限与安全）
+### 用户和模式
+* 用户拥有的对象集合是模式。
+* 用户与模式一一对应，并其名称相同。
+* 用户名和模式通常可互换使用。
+
+
+  

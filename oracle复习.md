@@ -1,3 +1,5 @@
+
+
 ##  第三章 管理oracle数据库
 ### 管理初始化参数
    初始化参数用于设置实例和数据库特征。在oracle中，初始化参数存储在参数文件中，启动实列，打开数据库是都必须提供相应的参数文件。
@@ -123,6 +125,80 @@ Through V$INSTANCE ACTIVE_STATUS to see if the current database is in quiesce st
 * 用户拥有的对象集合是模式。
 * 用户与模式一一对应，并其名称相同。
 * 用户名和模式通常可互换使用。
+### 管理用户
+```create user user1 identifited by 123456 default tablespace ***  quto 10M on *** temporay tablespace temp;--user1 123456 默认表空间  10M 对默认表空间可使用的最大空间， temp 临时表空间 ```
+**创建用户后请注意以下事项：**
+  * 初始用户没有任何权限，无法执行任何数据库操作;
+  * 如果未指定临时表空间子句，则Oracle将默认临时表空间作为用户临时表空间;
+* 如果没有指定默认的tablespace子句，Oracle会将Users表空间作为用户的默认表空间;
+  *  如果未指定QUOTA子句，则用户将无法在相应的表空间中建立数据对象。
+  ```
+  alter user myuser quota 100M on users;
+  ALTER USER scott IDENTIFIED BY tigerabc;
+  ALTER USER myuser ACCOUNT UNLOCK;
+  DROP USER myuser2 CASCADE;
+  ```
+  ### 管理权限
+* 系统权限：允许用户在数据库中执行特定操作
+   * 系统权限可以授予用户，角色，PUBLIC用户组;
+   * 通常，系统特权被授予可信用户，以避免滥用系统特权，并直接危及特权安全性
+   * 系统权限分类：
+      * 鉴于模式对象：使用任何键
+      * 鉴于非模式对象
+   * Commonly used privileges as follows:
+      * Create Session
+      * Restricted Session
+       * Create Table
+        *  Alter System
+        *  Create TableSpace
+       *   Grant Any Object Privilege
+        *  Create Any Table
+        *   Select Any Table
+* 对象权限：允许用户访问和操作特定对象
+### 角色（角色是具有名称的一组相关权限的组合，即将不同的权限组合在一起就形成了角色）
+**角色的用处**
+* 更轻松的权限管理使用角色简化权限管理。 您可以将权限授予角色，然后将该角色授予每个用户，而不是向多个用户授予相同的权限集。
+*  动态权限管理
+* 如果修改了与角色关联的权限，则授予该角色的所有用户将自动立即获取已修改的权限。
+*  特权的选择性可用性
+* 可以启用和禁用角色以临时打开和关闭权限。 启用角色还可用于验证用户是否已被授予该角色。
+*  通过操作系统授予
+* 操作系统命令或实用程序可用于将角色分配给数据库中的用户。
+####  Manage Role
+```
+CREATE ROLE role_name [IDENTIFIED BY password];
+DROP ROLE account_role;
+GRANT CREATE TRIGGER TO ACCOUNT_ROLE;
+GRANT DELETE, INSERT, SELECT, UPDATE ON SCOTT.SALGRADE TO ACCOUNT_ROLE;
+REVOKE UPDATE ON SCOTT. BONUS FROM ACCOUNT_ROLE;
+```
+### Manage Profile（概要文件）
+* 资源限制参数
+   * CPU_PER_SESSION：指定会话的CPU时间限制，以百分之一秒表示。
+   * CPU_PER_CALL：指定呼叫的CPU时间限制（解析，执行或获取），以百分之一秒表示
+   * CONNECT_TIME：指定会话的总运行时间限制，以分钟为单位。
+   * IDLE_TIME：指定会话期间连续非活动时间的允许时间段，以分钟为单位。长时间运行的查询和其他操作不受此限制。
+   * SESSIONS_PER_USER：指定要限制用户的并发会话数。
+   * LOGICAL_READS_PER_SESSION：指定在会话中读取的允许数据块数，包括从内存和磁盘读取的块。
+   * LOGICAL_READS_PER_CALL：指定为处理SQL语句（解析，执行或获取）的调用而读取的允许数据块数。
+   * nPRIVATE_SGA：指定会话可在系统全局区域（SGA）的共享池中分配的专用空间量。
+   * COMPOSITE_LIMIT：指定会话的总资源成本，以服务单位表示。 Oracle数据库将总服务单位计算CPU_PER_SESSIONCONNECT_TIME,LOGICAL_READS_PER_SESSION和PRIVATE_SGA的加权和。
+* 密码管理参数
+   * FAILED_LOGIN_ATTEMPTS：指定在锁定帐户之前登录用户帐户的连续失败尝试次数。 如果省略此子句，则默认值为10次。
+   * PASSWORD_LOCK_TIME：指定在指定的连续失败登录尝试次数后帐户将被锁定的天数。 如果省略此子句，则默认值为1天。
+   * PASSWORD_GRACE_TIME：指定宽限期（宽限期）开始之后的天数，在此期间发出警告并允许登录。 如果省略此子句，则默认值为7天。
+   * PASSWORD_LIFE_TIME：指定可以使用相同密码进行身份验证的天数。 如果还为PASSWORD_GRACE_TIME设置了值，则如果在宽限期内未更改密码，则密码将过期，并且拒绝其他连接。 如果省略此子句，则默认值为180天。
+   * PASSWORD_VERIFY_FUNCTION：允许将PL / SQL密码复杂性验证脚本作为参数传递给CREATE PROFILE语句。 Oracle数据库提供了一个默认脚本，但您可以创建自己的例程或使用第三方软件。
+   * PASSWORD_REUSE_MAX PASSWORD_REUSE_TIME 这两个参数必须相互结合设置。 PASSWORD_REUSE_TIME指定无法重复使用密码的天数。 PASSWORD_REUSE_MAX指定在重用当前密码之前所需的密码更改次数。 要使这些参数生效，必须为它们指定一个值。 例如，如果将PASSWORD_REUSE_TIME指定为30并将PASSWORD_REUSE_MAX指定为10，则如果密码已更改10次，则用户可在30天后重复使用密码。
+  ```
+  ALTER PROFILE pwd_profile LIMIT PASSWORD_LIFE_TIME 10;
+  DROP PROFILE pwd_profile CASCADE;
+  ```
+
+
+
+  
+
 
 
   

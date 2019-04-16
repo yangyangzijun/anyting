@@ -194,6 +194,30 @@ REVOKE UPDATE ON SCOTT. BONUS FROM ACCOUNT_ROLE;
   ALTER PROFILE pwd_profile LIMIT PASSWORD_LIFE_TIME 10;
   DROP PROFILE pwd_profile CASCADE;
   ```
+## 备份与恢复
+#### 故障类别
+* 语句失败：单个数据库操作（选择，插入，更新，删除）失败。
+   * 尝试将无效数据输入表中
+   * 权限不足
+   * 尝试分配失败的空间
+   * 应用中的逻辑错误
+* 用户进程失败：单个数据库会话失败。
+ * 用户执行了异常断开连接
+ * 用户的会话异常终止
+ * 用户遇到程序错误，终止会话。
+* 网络故障：丢失与数据库的连接。
+   * Listener fails
+   * 网络接口卡（NIC）失败
+   * Network connection fails
+* 用户错误：用户成功完成操作，但操作是错误的不正确（丢弃表格，输入错误数据）。
+   * 用户无意中删除或修改了数据。
+   * User drops a table.
+* 实例故障：数据库实例意外关闭。
+   * Power outage
+   * 硬件故障
+   * 其中一个后台进程失败
+   * 紧急关机程序
+* 介质故障：一个或多个数据库文件丢失（已删除，磁盘故障）。
 
 
 

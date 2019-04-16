@@ -39,6 +39,7 @@
 
  * 按以下顺序从$ ORACLE_HOME / dbs读取初始化文件。
 * 使用STARTUP指定PFILE参数会覆盖默认行为。
+
 * 分配SGA。
  * 启动后台进程。
 * 打开alertSID.log文件和跟踪文件。
@@ -87,3 +88,32 @@ A = ABORT(终止关闭方式)  I=IMMEDIATE(立即关闭方式)  T=transaction(�
 * 从内存中删除。
 * 在关闭实例之前，Oracle服务器会关闭并卸载数据库。
 * 下次启动不需要实例恢复。
+#### Transactional
+* 没有客户端可以在此特定实例上启动新事务。
+* 当客户端结束正在进行的事务时，客户端将断开连接。
+* 当所有交易完成后，立即进行停药。
+* 下次启动不需要实例恢复。
+#### Immediate
+* Oracle数据库正在处理的当前SQL语句未完成。
+* Oracle服务器不会等待当前连接到数据库的用户断开连接。
+* Oracle服务器回滚活动事务并断开所有连接的用户。
+* 在关闭实例之前，Oracle服务器会关闭并卸载数据库。
+* 下次启动不需要实例恢复。
+#### abort
+* Oracle服务器正在处理的当前SQL语句将立即终止。
+* Oracle服务器不会等待当前连接到数据库的用户断开连接。
+* 数据库和重做缓冲区不会写入磁盘。
+* 未回滚未提交的事务在不关闭文件的情况下终止实例。
+* 数据库未关闭或卸除。
+* 下次启动需要实例恢复，这将自动发生。
+#### 数据库的特殊状态
+##### **Quiesced（静默状态）** Only dba（sysdba or sysoper）can execute this database operation
+* **Quiesced From** normal to quiesce state: alter system quiesce restricted;  **From quiesce state to normal：**alter system unquiesce;
+
+Through V$INSTANCE ACTIVE_STATUS to see if the current database is in quiesce state .**select instance_name,active_state  from V$INSTANCE; **
+#### Suspend(挂起状态) 暂停物理文件（控制文件，数据文件和重做日志文件）的所有I / O操作。 它适用于物理备份
+
+* alter system suspend;//挂起数据库
+
+* alter system resume;//数据库从挂起状态恢复。
+**select database_state  from V$INSTANCE; **

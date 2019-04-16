@@ -46,3 +46,27 @@
 * **NOMOUNT** 实例已启动，但尚未与数据库关联   ->创建并启动与数据库对应的实例
 * **MOUNT**  该实例已启动并与数据库关联读取其控制文件。 数据库对用户不开放  ->为实例加载数据库
 * **open**  该实例已启动并与打开的数据库相关联。授权用户可以访问数据文件中包含的数据。  ->将数据库设置为打开状态
+Oracle 参数变更生效范围AlterSystem Set Parameter_Name = Value Scope＝（Spfile、Menory、Both）使用BOTH选项实际上等同于不带参数的ALTER SYSTEM语句
+
+|取值|结果|动态参数|静态参数|
+|------|----|---|--|---|
+|spfile|表示该修改只对服务器参数有效|数据库重启时有效，永久有效|同动态参数，静态参数只适于这种情况|
+|Menory|表示该修改只对内存有效|立即有效，但不产生永久效果，因为没有修改服务器参数|不允许使用|
+|Both|表示该修改对上述两种都有效|立即有效，永久有效|不允许使用|
+#### To start up an instance, use the following command:
+  **startup [nomount|mount|open|force] [resetrict] [pfile=filename]**
+* OPEN：允许用户访问数据库。
+* MOUNT：为某些DBA活动安装数据库，但不提供用户对数据库的访问权限。
+* NOMOUNT：创建SGA并启动后台进程但不提供对数据库的访问。
+* PFILE = parfile：启用非默认初始化参数文件以用于配置实例。
+* FORCE：在执行normalstartup之前中止正在运行的实例。
+* RESTRICT：仅允许具有RESTRICTED SESSIONPrivilege的用户访问数据库。
+* RECOVER：数据库启动时开始恢复介质。
+
+ALTER DATABASE MOUNT;
+ALTER DATABASE OPEN READ ONLY;
+### Shutting Down an Oracle DatabaseInstance(四个状态(open,close,nomount,shut down)，三个步骤)
+#### 步骤
+* **closed：** The database is mounted, but online data files andredo log files are closed
+* **Database unmounted：**实例已启动，但不再与数据库的控制文件关联。
+  

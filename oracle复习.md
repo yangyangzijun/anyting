@@ -49,7 +49,7 @@
 Oracle 参数变更生效范围AlterSystem Set Parameter_Name = Value Scope＝（Spfile、Menory、Both）使用BOTH选项实际上等同于不带参数的ALTER SYSTEM语句
 
 |取值|结果|动态参数|静态参数|
-|------|----|---|--|---|
+|------|----|---|--|
 |spfile|表示该修改只对服务器参数有效|数据库重启时有效，永久有效|同动态参数，静态参数只适于这种情况|
 |Menory|表示该修改只对内存有效|立即有效，但不产生永久效果，因为没有修改服务器参数|不允许使用|
 |Both|表示该修改对上述两种都有效|立即有效，永久有效|不允许使用|
@@ -68,5 +68,22 @@ ALTER DATABASE OPEN READ ONLY;
 ### Shutting Down an Oracle DatabaseInstance(四个状态(open,close,nomount,shut down)，三个步骤)
 #### 步骤
 * **closed：** The database is mounted, but online data files andredo log files are closed
-* **Database unmounted：**实例已启动，但不再与数据库的控制文件关联。
-  
+* **Database unmounted:** 实例已启动，但不再与数据库的控制文件关联。
+* **shutdown:** The database instance is no longer started.
+
+|Shutdown Mode|A|I|T|N|
+|----|---|---|--|---|
+|Allows new connections|no|no|no|no|
+|Waits until current sessions end|no|no|no|yes|
+|Waits until current transactions end|no|no|yes|yes|
+|Forces a checkpoint and closes files|no|no|yes|yes|
+
+A = ABORT(终止关闭方式)  I=IMMEDIATE(立即关闭方式)  T=transaction(事务关闭方式) n=normal(正常关闭)
+##### normal 
+* 无法建立新的连接。
+* 在完成关闭之前，Oracle服务器会等待所有用户断开连接。
+* 数据库和重做缓冲区写入磁盘。
+* 后台进程终止，SGA结束
+* 从内存中删除。
+* 在关闭实例之前，Oracle服务器会关闭并卸载数据库。
+* 下次启动不需要实例恢复。

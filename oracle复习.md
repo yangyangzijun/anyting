@@ -255,9 +255,60 @@ REVOKE UPDATE ON SCOTT. BONUS FROM ACCOUNT_ROLE;
  * 完全恢复：回到失败的地步
 * 不完全恢复：不完全恢复意味着丢失数据。 通过恢复所有数据文件及时收回整个数据库，然后它不会完全恢复。
 * 执行不完全恢复只有两个原因：要么无法完全恢复，要么故意（故意地）决定丢失数据。
-   
-  
-
+#### 数据泵的导入导出
+* Full
+* Schema
+* Table
+* Tablespace
+* Transportatable tablespace
+```
+ create or replace directory dump_dir as 'E:\Oracle\dump';
+  grant read, write on directory dump_dir to scott;
+  expdp scott/Jsj123456 directory=dump_dir dumpfile=myusertab.dmp tables=dept,emp;
+ impdp scott/Jsj123456 directory=dump_dir dumpfile=myusertab.dmp tables=dept, emp
+ ```
+ 
+ #### 恢复管理器
+ Recovery Manager（RMAN）是一个Oracle数据库客户端，用于执行备份和恢复任务
+您的数据库并自动管理备份策略。
+RMAN提供灵活的方式：
+* 备份数据库，表空间，数据文件，控制文件和归档重做日志
+* 管理备份和恢复任务
+* 执行增量块级备份和块级介质恢复
+* 在备份期间检测损坏的块
+* 创建备份时使用二进制压缩
+###### 组件
+* Enterprise Manager：基于浏览器的数据库接口，包括通过RMAN进行备份和恢复。
+* Server Sessions:RMAN调用的服务器进程（UNIX）或线程（Windows NT / 2000）连接到目标数据库，以通过PL / SQL接口执行备份，还原和恢复功能。这些会话从磁盘，磁带或闪回恢复区读取或写入文件，闪存恢复区是指定为与数据库恢复相关的文件的默认存储区域的存储位置。
+* Target Database:包含RMAN备份或恢复的控制文件，数据文件和可选归档重做日志的数据库。 RMAN使用目标数据库控制文件来收集有关目标数据库的元数据并存储有关其自身操作的信息。备份和恢复的工作由目标数据库上运行的服务器会话执行。
+*  Auxiliary(standby, duplicate) Database（辅助）：在创建重复数据库或执行表空间时间点恢复（TSPITR）时使用辅助数据库。辅助数据库可以与其父服务器位于同一主机上，也可以位于不同的主机上
+* Channel:要执行和记录备份和恢复操作，RMAN需要指向目标数据库的链接。此链接称为频道。您可以手动分配频道或使用自动频道分配预配置频道。
+ * RMAN存储库：RMAN在RMAN存储库中维护有关目标数据库及其备份和恢复操作的元数据。除其他外，RMAN存储有关其自身配置设置，目标数据库架构，归档重做日志以及磁盘或磁带上所有备份文件的信息。 RMAN存储库数据始终存储在目标数据库的控制文件中。
+* 恢复目录数据库：包含恢复目录的数据库，其中包含RMAN用于执行备份和恢复的元数据。您可以创建一个包含多个目标数据库的RMAN元数据的恢复目录。除非您将RMAN与物理备用数据库一起使用，否则在使用RMAN时，恢复目录是可选的，因为RMAN将其元数据存储在每个目标数据库的控制文件中。
+ * 媒体管理库：RMAN在写入或读取磁带时使用媒体管理库（MML）。使用磁带介质所需的附加介质管理软件由介质和存储系统供应商提供。  
+ ##### 闪回
+ **分类**
+* 闪回事务查询（Flashback Transaction Query）：查看某个事务或所有事务在过去一段时间对数据进行的修改；
+* 闪回查询（Flashback Query）：查询过去某个时间点或某个SCN值时表中的数据信息；
+* 闪回版本查询（Flashback Version Query）：查询过去某个时间段或某个SCN段内表中数据的变化情况；
+* 闪回表（Flashback Table）：将表恢复到过去的某个时间点或某个SCN值时的状态；
+* 闪回删除（Flashback Drop）：将已经删除的表及其关联对象恢复到删除前的状态；
+* 闪回数据库（Flashback Database）：将数据库恢复到过去某个时间点或某个SCN值时的状态。
+* 闪回数据归档：利用保存在一个或多个表空间中的数据变化信息查询过去某个时刻或某个SCN值时表中数据的快照。
+```
+ SELECT empno, sal FROM scott.emp AS OF TIMESTAMP TO_TIMESTAMP('2017-11-8 15:34:00','YYYY-MM-DD HH24:MI:SS') WHERE empno=7900;--基于时间戳的闪回查询
+  SELECT empno,salary FROM scott.emp AS OF SCN 9465723 WHERE empno=7900;
+ SELECT versions_xid XID,versions_startscn STARTSCN,versions_endscn ENDSCN,versions_operation OPERATION, sal FROM scott.emp VERSIONS BETWEEN SCN MINVALUE AND MAXVALUE WHERE empno=7900 ORDER BY STARTSCN;  闪回版本查询
+  SELECT xid,start_scn,commit_scn,operation,table_name,table_owner FROM FLASHBACK_TRANSACTION_QUERY WHERE table_name= 'EMP'；闪回事务查询
+flash table table_name to scn 696669+;闪回表
+FLASHBACK TABLE example TO BEFORE DROP RENAME TO new_example;闪回删除
+FLASHBACK [STANDBY] DATABASE [database] TO [SCN|TIMESTAMP expression]| [BEFORE SCN|TIMESTAMPexpression] 闪回数据库
+参数说明
+*  STANDBY：指定执行闪回的数据库为备用数据库；
+* TO SCN：将数据库恢复到指定SCN的状态；
+* TO TIMESTAMP：将数据库恢复到指定的时间点；
+* TO BEFORE SCN：将数据库恢复到指定SCN的前一个SCN状态
+* TO BEFORE TIMESTAMP：将数据库恢复到指定时间点前一秒的状态。
 
 
   

@@ -1,5 +1,35 @@
-
-
+##  第二章 oracle体系结构
+*A database instance is a set of memory structures that manage database files. A database is a set of physical files on disk created by the CREATE DATABASE statement. The instance manages its associated data and serves the users of the database.*
+#### oracle database
+#####  物理结构和逻辑结构
+ **物理结构可在操作系统级别查看。
+    逻辑存储结构由Oracle数据库创建和识别，操作系统不知道**
+* Logical Storage Structures
+   * TABLESPACE （Tablespace is used to store related database objects.）
+   * SEGMENT （Segments are used to organize tablespace data within a tablespace） 
+   * extents(盘区)
+      * 范围是由连续数据块组成的数据库存储空间分配的逻辑单元。
+      * 范围是Oracle存储分配的最小单位。
+      * 默认情况下，数据库在创建段时为数据段分配初始范围。 范围始终包含在一个数据文件中。
+   * DATA BLOCKS 
+      * Oracle数据库以称为数据块（也称为Oracle块或页面）的单元管理数据库的数据文件中的逻辑存储空间。
+      * 数据块是数据库I / O的最小单位。
+      1. 块头 - 操作系统块地址
+      2. 表目录 - 标识以下数据所属的数据库表
+      3. 行目录 - 标识数据所属的数据库行
+      4. 行数据 - 存储实际的行值
+* Physical Storage Structures
+   * 控制文件
+       * 仅与一个数据库关联的小型二进制文件。
+       *  每个数据库都有一个唯一的控制文件，尽管它可以保留相同的副本。
+      *  包含构成数据库的其他物理文件的位置：数据文件和重做日志文件。
+      * 还包含有关数据库内容和状态的重要信息。
+   * 数据文件（）
+   * 参数文件 （指定有关数据库实例的配置信息。）
+   * 日志文件 （存储由于事务和内部Oracle活动而对数据库所做的更改。）
+   * 其它文件
+ ### Memory Structures 启动实例时，Oracle数据库会分配一个内存区域并启动后台进程。
+ 
 ##  第三章 管理oracle数据库
 ### 管理初始化参数
    初始化参数用于设置实例和数据库特征。在oracle中，初始化参数存储在参数文件中，启动实列，打开数据库是都必须提供相应的参数文件。

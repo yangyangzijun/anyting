@@ -260,5 +260,191 @@ char find_str(string s1,string s2) /*思路 map 统计str1 出现每个字母的
     }
     return false;
 }
+```* 题目描述:
+
+  1. 在一个学校办公室，有n个人要做不同的事物处理，已知每个人需要处理的时间为ti，（0<i<=n）,请求出每个人排队等候时间总和最小的时间。
+
+  输入:
+
+  > 用空格隔开的N的整数组成的字符串，表示每人需要处理的时间
+
+  输出:
+
+  > n个人排队时间最小总和
+
+  举例:
+
+  > 输入：5 10 8 7 输出：67
+
+假如 函数的参数数据类型为 vector  利用Algorithm 库中的sort() 排序求解
+
+```c++
+int sortedSquares(vector<int>& A) {
+    sort(A.begin(),A.end());
+    int res = 0, tag = A.size();
+    for(int i=0;i<A.size();i++)
+    {
+        res = res + (tag-i)*A[i];
+    }
+        return res;
+    }
 ```
+
+
+
+* 题目描述:
+
+  1. 开学了，又有好多新生过来报道了。新生晚会需要同学来表演节目，来报名表演节目的人有很多，总共有m个，但是只想从中抽取n个，那么一共有多少种选择方法呢？
+
+  输入:
+
+  > 两个正整数m和n。
+
+  输出:
+
+  > 一个正整数，代表可选择的方法个数。
+
+  举例:
+
+  > 输入(3,2)，输出3。
+
+```
+/* 排列组合 从n中挑选m个 
+计算公式 ： res = (n!)/(m!(n-m)!)*  代码存在的问题·m！不能超出int_max/
+
+int sortedSquares(int m , int n) {
+       int m_ , n_ ,m_n_,d = 1;
+       for(int i = 1;i<=m;i++)
+       {
+           d *=i;
+          if(i==n)
+          {
+              n_ = d;
+          }
+          if(i==m)
+          {
+              m_ = d;
+          }
+          if(i==m-n)
+          {
+            m_n_ = d;             
+          }
+       }
+       return m_/(n_*(m_n_));
+    }
+
+```
+
+* 题目描述:
+
+1. 小明有一个整数序列sequence。小强要在小明的序列中选择两个不同位置，并交换这两个位置上的元素。（被交换的两元素值可能相同）返回小强交换后可能得到的不同序列的个数。
+
+输入:
+
+> 输入一个整型数组sequence。sequence应包括2到47个元素（其中包括2和47），sequence中每个元素的取值范围都在1和47之间（其中包括1和47）
+
+输出:
+
+> 返回可能得到的不同的序列个数
+
+举例:
+
+> sequence:{4, 7, 4},返回3.如果小强交换了第0和1位（从零开始）上的元素，序列将会变为{7, 4, 4}。如果他改而交换第1和2位上的元素，序列将会变为{4, 4, 7}。最后，如果他交换第0和2位上的元素，序列将任然为{4, 7, 4}。这三个结果都是不同的。
+
+```
+/* 初始化为res = 1 循环交换*/
+   int find ( int sequence[], int n ) {
+      int  res = 1;
+      for(int i = 0;i<n;i++)
+      {
+          for(int j = i+1;j<n;j++)
+          {
+              if(sequence[i] != sequence[j])
+              {
+                  res++;
+              }
+          }
+      }
+        return res;
+    }
+/* 排列组合思想  先组合 后减去 再加1 */
+int find ( int sequence[], int n ) {
+       if (n==1)
+           return 1;
+      int res = 1,d=1,sum = n*(n-1)/2;
+      unordered_map<int,int> mp ;
+      unordered_map<int,int> ::iterator it;
+      mp.insert(make_pair(sequence[0],1));
+      for(int i = 1;i<n;i++)
+      {
+
+          it = mp.find(sequence[i]);
+          if(it!=mp.end())
+          {
+              it->second +=1;
+          }
+      }
+      d *= n;
+      int t = 0;
+      for(it = mp.begin();it != mp.end();it++)
+      {
+            t += it->second*(it->second-1)/2;
+      }
+        return sum-t+1;
+    }
+               
+                
+
+```
+
+* \1. 给定你一个字符串s。请返回含有连续两个s作为子串的最短字符串。请注意两个s可能会有重叠部分。
+
+  输入:
+
+  > 输入一个字符串s。s含有1到50个字符（其中包括1和50）,s中每个字符都是一个小写字母（从a到z）
+
+  输出:
+
+  > 返回含有连续两个s作为子串的最短字符串
+
+  举例:
+
+  > s = "aba",返回"ababa"。
+
+```c++
+bool test(char s[], int s1_s,int s1_e,int s2_s,int s2_e) /* 判断字符串相同函数*/
+{
+    for(int i=s1_s;i<s1_e;i++)
+    {
+        if(s[i] != s[s2_s+i] )
+        {
+            return false;
+        }
+    }
+    return true;
+}
+char *getShortest(char s[], int len) {
+    int length = 0;
+    for(int i=1;i<len;i++)
+    {
+        if(test(s,0,i,len-i,len) == true)
+        {length = i;}
+    }
+    char res[len+len-length] ;
+    for(int i = 0;i<len;i++)
+    {
+        res[i] = s[i];
+    }
+    for(int i=len+len-length-1,j=len-1;i>=len;i--,j--)
+    {
+        res[i] = s[j];
+    }
+    res[len+len-length] = '\0';
+    char *p = res ;
+    return p;
+
+}
+```
+
+
 
